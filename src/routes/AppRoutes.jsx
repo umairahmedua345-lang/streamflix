@@ -1,41 +1,180 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
-import Home from "../pages/Home";
-import Movies from "../pages/Movies";
-import TVShows from "../pages/TVShows";
-import Search from "../pages/Search";
 
-import MovieDetails from "../pages/MovieDetails";
-import TVDetails from "../pages/TVDetails";
+import { lazy, Suspense } from "react";
 
-import WatchMovie from "../pages/WatchMovie";
-import WatchTV from "../pages/WatchTV";
+import Loading from "../components/common/Loading";
 
-import NotFound from "../pages/NotFound";
+
+const Home =
+  lazy(() => import("../pages/Home"));
+
+const MovieDetails =
+  lazy(() => import("../pages/MovieDetails"));
+
+const TVDetails =
+  lazy(() => import("../pages/TVDetails"));
+
+const WatchMovie =
+  lazy(() => import("../pages/WatchMovie"));
+
+const WatchTV =
+  lazy(() => import("../pages/WatchTV"));
+
+const Search =
+  lazy(() => import("../pages/Search"));
+
+const Favorites =
+  lazy(() => import("../pages/Favorites"));
+
+const NotFound =
+  lazy(() => import("../pages/NotFound"));
+
+import PageTransition from "../components/common/PageTransition";
+
+
 
 export default function AppRoutes() {
+
+
+  const location =
+    useLocation();
+
+
+
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
 
-      <Route path="/movies" element={<Movies />} />
+    <AnimatePresence mode="wait">
 
-      <Route path="/tv" element={<TVShows />} />
 
-      <Route path="/search" element={<Search />} />
+      <Suspense fallback={<Loading />}>
 
-      <Route path="/movie/:id" element={<MovieDetails />} />
+  <Routes
+    location={location}
+    key={location.pathname}
+  >
 
-      <Route path="/tv/:id" element={<TVDetails />} />
 
-      <Route path="/watch/movie/:id" element={<WatchMovie />} />
 
-      <Route
-        path="/watch/tv/:id/:season/:episode"
-        element={<WatchTV />}
-      />
+        <Route
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+          path="/"
+
+          element={
+            <PageTransition>
+              <Home/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/movie/:id"
+
+          element={
+            <PageTransition>
+              <MovieDetails/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/tv/:id"
+
+          element={
+            <PageTransition>
+              <TVDetails/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/watch/movie/:id"
+
+          element={
+            <PageTransition>
+              <WatchMovie/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/watch/tv/:id/:season/:episode"
+
+          element={
+            <PageTransition>
+              <WatchTV/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/search"
+
+          element={
+            <PageTransition>
+              <Search/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/favorites"
+
+          element={
+            <PageTransition>
+              <Favorites/>
+            </PageTransition>
+          }
+
+        />
+
+
+
+        <Route
+
+          path="*"
+
+          element={
+            <PageTransition>
+              <NotFound/>
+            </PageTransition>
+          }
+
+        />
+
+
+      </Routes>
+
+      </Suspense>
+
+
+    </AnimatePresence>
+
   );
+
 }

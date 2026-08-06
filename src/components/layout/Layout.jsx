@@ -1,16 +1,40 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-export default function Layout({ children }) {
+
+export default function Layout({
+  children,
+}) {
+
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+
+    <div
+      className="
+        min-h-screen
+        bg-zinc-950
+        text-white
+      "
+    >
+
+
       <Navbar />
 
-      <main className="flex-1 pt-16">
+
+
+      <main>
+
         {children}
+
       </main>
 
+
+
       <Footer />
+
+
     </div>
+
   );
+
 }
