@@ -15,9 +15,11 @@ const PLACEHOLDER =
 
 
 
+
 export default function MovieCard({
   item,
 }) {
+
 
 
   const {
@@ -27,9 +29,12 @@ export default function MovieCard({
 
 
 
+
   const {
     continueWatching,
   } = useContinueWatching();
+
+
 
 
 
@@ -41,27 +46,54 @@ export default function MovieCard({
 
 
 
+
+
   const type =
     item.media_type ||
-    (item.first_air_date
-      ? "tv"
-      : "movie");
+    (
+      item.first_air_date
+        ? "tv"
+        : "movie"
+    );
+
+
 
 
 
   const poster =
     item.poster_path
+
       ? `${IMAGE}${item.poster_path}`
+
       : PLACEHOLDER;
 
 
 
 
-  // Always go to details first
+
+
   const detailsPage =
     type === "tv"
+
       ? `/tv/${item.id}`
+
       : `/movie/${item.id}`;
+
+
+
+
+
+
+  const watchPage =
+    type === "tv"
+
+      ? `/watch/tv/${item.id}/1/1`
+
+      : `/watch/movie/${item.id}`;
+
+
+
+
 
 
 
@@ -72,20 +104,33 @@ export default function MovieCard({
 
 
 
+
+
   const percent =
     progress
+
       ? Math.min(
-          (progress.watched /
-          progress.duration) * 100,
+          (
+            progress.watched /
+            progress.duration
+          ) * 100,
           100
         )
+
       : 0;
+
+
+
+
 
 
 
   return (
 
+
+
     <div
+
       className="
         group
         relative
@@ -96,11 +141,16 @@ export default function MovieCard({
         hover:z-20
         md:min-w-[200px]
       "
+
     >
 
 
 
+
+
+
       <div
+
         className="
           relative
           overflow-hidden
@@ -108,11 +158,21 @@ export default function MovieCard({
           bg-zinc-900
           shadow-lg
         "
+
       >
 
 
 
-        <Link to={detailsPage}>
+
+
+
+
+        <Link
+
+          to={detailsPage}
+
+        >
+
 
 
           <LazyImage
@@ -141,10 +201,16 @@ export default function MovieCard({
 
 
 
-        {/* Hover Details Button */}
+
+
+
+
+        {/* Hover play overlay */}
 
         <div
+
           className="
+            pointer-events-none
             absolute
             inset-0
             flex
@@ -155,14 +221,23 @@ export default function MovieCard({
             duration-300
             group-hover:bg-black/50
           "
+
         >
+
+
 
 
           <Link
 
-            to={detailsPage}
+            to={watchPage}
+
+            onClick={(e)=>
+              e.stopPropagation()
+            }
+
 
             className="
+              pointer-events-auto
               scale-0
               rounded-full
               bg-red-600
@@ -182,6 +257,8 @@ export default function MovieCard({
           </Link>
 
 
+
+
         </div>
 
 
@@ -190,7 +267,9 @@ export default function MovieCard({
 
 
 
-        {/* Favorite Button */}
+
+
+        {/* Favorite button */}
 
         <button
 
@@ -201,10 +280,12 @@ export default function MovieCard({
             })
           }
 
+
           className="
             absolute
             right-3
             top-3
+            z-10
             rounded-full
             bg-black/70
             p-2
@@ -214,6 +295,8 @@ export default function MovieCard({
           "
 
         >
+
+
 
           <Heart
 
@@ -225,6 +308,7 @@ export default function MovieCard({
                 : "transparent"
             }
 
+
             color={
               isFavorite(item.id)
                 ? "#ef4444"
@@ -233,7 +317,10 @@ export default function MovieCard({
 
           />
 
+
+
         </button>
+
 
 
 
@@ -244,10 +331,12 @@ export default function MovieCard({
         {type === "tv" && (
 
           <span
+
             className="
               absolute
               bottom-3
               left-3
+              z-10
               rounded-full
               bg-black/70
               px-3
@@ -255,11 +344,13 @@ export default function MovieCard({
               text-xs
               font-semibold
             "
+
           >
 
             SERIES
 
           </span>
+
 
         )}
 
@@ -273,18 +364,24 @@ export default function MovieCard({
 
 
 
+
+
       <div className="mt-3">
 
 
+
         <h3
+
           className="
             line-clamp-1
             font-semibold
             group-hover:text-red-500
           "
+
         >
 
           {title}
+
 
         </h3>
 
@@ -292,7 +389,10 @@ export default function MovieCard({
 
 
 
+
+
         <div
+
           className="
             mt-1
             flex
@@ -301,25 +401,35 @@ export default function MovieCard({
             text-sm
             text-zinc-400
           "
+
         >
 
+
+
           <span>
+
             ⭐ {
               item.vote_average
                 ? item.vote_average.toFixed(1)
                 : "N/A"
             }
+
           </span>
 
 
 
-          {type === "movie" && (
 
-            <span>
-              Movie
-            </span>
 
-          )}
+          {
+            type === "movie" && (
+
+              <span>
+                Movie
+              </span>
+
+            )
+          }
+
 
 
         </div>
@@ -330,9 +440,11 @@ export default function MovieCard({
 
 
 
+
         {progress && (
 
           <div
+
             className="
               mt-3
               h-1.5
@@ -340,7 +452,9 @@ export default function MovieCard({
               rounded-full
               bg-zinc-800
             "
+
           >
+
 
             <div
 
@@ -355,6 +469,7 @@ export default function MovieCard({
 
             />
 
+
           </div>
 
         )}
@@ -365,7 +480,10 @@ export default function MovieCard({
 
 
 
+
+
     </div>
+
 
   );
 
