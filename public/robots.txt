@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://streamflix-olive.vercel.app/sitemap.xml

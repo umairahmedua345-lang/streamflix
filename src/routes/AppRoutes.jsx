@@ -1,14 +1,19 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-
-
 import { lazy, Suspense } from "react";
 
 import Loading from "../components/common/Loading";
+import PageTransition from "../components/common/PageTransition";
 
 
 const Home =
   lazy(() => import("../pages/Home"));
+
+const Movies =
+  lazy(() => import("../pages/Movies"));
+
+const TVShows =
+  lazy(() => import("../pages/TVShows"));
 
 const MovieDetails =
   lazy(() => import("../pages/MovieDetails"));
@@ -28,153 +33,194 @@ const Search =
 const Favorites =
   lazy(() => import("../pages/Favorites"));
 
+const Blog =
+  lazy(() => import("../pages/Blog"));
+
+const Article =
+  lazy(() => import("../pages/Article"));
+
 const NotFound =
   lazy(() => import("../pages/NotFound"));
-
-import PageTransition from "../components/common/PageTransition";
-
 
 
 export default function AppRoutes() {
 
-
   const location =
     useLocation();
-
 
 
   return (
 
     <AnimatePresence mode="wait">
 
-
       <Suspense fallback={<Loading />}>
 
-  <Routes
-    location={location}
-    key={location.pathname}
-  >
+        <Routes
+          location={location}
+          key={location.pathname}
+        >
+
+
+          {/* HOME */}
+
+          <Route
+            path="/"
+            element={
+              <PageTransition>
+                <Home />
+              </PageTransition>
+            }
+          />
 
 
 
-        <Route
+          {/* MOVIES */}
 
-          path="/"
-
-          element={
-            <PageTransition>
-              <Home/>
-            </PageTransition>
-          }
-
-        />
-
-
-
-        <Route
-
-          path="/movie/:id"
-
-          element={
-            <PageTransition>
-              <MovieDetails/>
-            </PageTransition>
-          }
-
-        />
+          <Route
+            path="/movies"
+            element={
+              <PageTransition>
+                <Movies />
+              </PageTransition>
+            }
+          />
 
 
 
-        <Route
+          {/* TV SHOWS */}
 
-          path="/tv/:id"
-
-          element={
-            <PageTransition>
-              <TVDetails/>
-            </PageTransition>
-          }
-
-        />
-
-
-
-        <Route
-
-          path="/watch/movie/:id"
-
-          element={
-            <PageTransition>
-              <WatchMovie/>
-            </PageTransition>
-          }
-
-        />
+          <Route
+            path="/tv"
+            element={
+              <PageTransition>
+                <TVShows />
+              </PageTransition>
+            }
+          />
 
 
 
-        <Route
+          {/* MOVIE DETAILS */}
 
-          path="/watch/tv/:id/:season/:episode"
-
-          element={
-            <PageTransition>
-              <WatchTV/>
-            </PageTransition>
-          }
-
-        />
-
-
-
-        <Route
-
-          path="/search"
-
-          element={
-            <PageTransition>
-              <Search/>
-            </PageTransition>
-          }
-
-        />
+          <Route
+            path="/movie/:id"
+            element={
+              <PageTransition>
+                <MovieDetails />
+              </PageTransition>
+            }
+          />
 
 
 
-        <Route
+          {/* TV DETAILS */}
 
-          path="/favorites"
-
-          element={
-            <PageTransition>
-              <Favorites/>
-            </PageTransition>
-          }
-
-        />
-
+          <Route
+            path="/tv/:id"
+            element={
+              <PageTransition>
+                <TVDetails />
+              </PageTransition>
+            }
+          />
 
 
-        <Route
 
-          path="*"
+          {/* WATCH MOVIE */}
 
-          element={
-            <PageTransition>
-              <NotFound/>
-            </PageTransition>
-          }
+          <Route
+            path="/watch/movie/:id"
+            element={
+              <PageTransition>
+                <WatchMovie />
+              </PageTransition>
+            }
+          />
 
-        />
 
 
-      </Routes>
+          {/* WATCH TV */}
+
+          <Route
+            path="/watch/tv/:id/:season/:episode"
+            element={
+              <PageTransition>
+                <WatchTV />
+              </PageTransition>
+            }
+          />
+
+
+
+          {/* SEARCH */}
+
+          <Route
+            path="/search"
+            element={
+              <PageTransition>
+                <Search />
+              </PageTransition>
+            }
+          />
+
+
+
+          {/* FAVORITES */}
+
+          <Route
+            path="/favorites"
+            element={
+              <PageTransition>
+                <Favorites />
+              </PageTransition>
+            }
+          />
+
+
+
+          {/* BLOG */}
+
+          <Route
+            path="/blog"
+            element={
+              <PageTransition>
+                <Blog />
+              </PageTransition>
+            }
+          />
+
+
+
+          {/* ARTICLE */}
+
+          <Route
+            path="/blog/:id"
+            element={
+              <PageTransition>
+                <Article />
+              </PageTransition>
+            }
+          />
+
+
+
+          {/* 404 */}
+
+          <Route
+            path="*"
+            element={
+              <PageTransition>
+                <NotFound />
+              </PageTransition>
+            }
+          />
+
+
+        </Routes>
 
       </Suspense>
-
 
     </AnimatePresence>
 
   );
-
 }

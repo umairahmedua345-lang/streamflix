@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import Layout from "../components/layout/Layout";
 import Hero from "../components/common/Hero";
@@ -9,64 +10,43 @@ import MovieCard from "../components/cards/MovieCard";
 
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
-
 import {
   getTrending,
   getPopularMovies,
   getPopularTV,
 } from "../services/tmdb";
 
+import articles from "../data/articles";
 
 
 export default function Home() {
 
-
   useDocumentTitle("Home");
 
 
+  const [loading, setLoading] = useState(true);
 
-  const [loading,setLoading] =
-    useState(true);
+  const [hero, setHero] = useState(null);
 
+  const [trending, setTrending] = useState([]);
 
+  const [movies, setMovies] = useState([]);
 
-  const [hero,setHero] =
-    useState(null);
-
-
-
-  const [trending,setTrending] =
-    useState([]);
+  const [tvShows, setTVShows] = useState([]);
 
 
 
-  const [movies,setMovies] =
-    useState([]);
+  useEffect(() => {
 
-
-
-  const [tvShows,setTVShows] =
-    useState([]);
-
-
-
-
-
-  useEffect(()=>{
-
-
-    async function loadData(){
-
+    async function loadData() {
 
       try {
-
 
         const [
           trend,
           movie,
           tv,
-        ] =
-        await Promise.all([
+        ] = await Promise.all([
 
           getTrending(),
 
@@ -77,124 +57,74 @@ export default function Home() {
         ]);
 
 
-
-
-
-
         const trendingData =
-          trend.data.results
-          .filter(
-            item =>
-              item.backdrop_path
-          )
-          .slice(0,20);
-
-
-
-
-        const movieData =
-          movie.data.results
-          .filter(
-            item =>
-              item.poster_path
-          )
-          .slice(0,20);
-
-
-
-
-        const tvData =
-          tv.data.results
-          .filter(
-            item =>
-              item.poster_path
-          )
-          .slice(0,20);
-
-
-
-
-
-        setTrending(
-          trendingData
-        );
-
-
-        setMovies(
-          movieData
-        );
-
-
-        setTVShows(
-          tvData
-        );
-
-
-
-
-
-
-        // choose highest rated hero
-
-        const heroContent =
-          [
-            ...movieData,
-            ...tvData,
-          ]
-          .sort(
-            (a,b)=>
-              b.vote_average -
-              a.vote_average
+          trend.data.results.filter(
+            (item) => item.backdrop_path
           );
 
 
+        const movieData =
+          movie.data.results.filter(
+            (item) => item.poster_path
+          );
 
-        setHero(
-          heroContent[0]
-        );
+
+        const tvData =
+          tv.data.results.filter(
+            (item) => item.poster_path
+          );
 
 
+        setTrending(trendingData);
 
-      }
+        setMovies(movieData);
 
-      catch(error){
+        setTVShows(tvData);
 
+
+        const heroList = [
+          ...movieData,
+          ...tvData,
+        ];
+
+
+        if (heroList.length > 0) {
+
+          const randomHero =
+            heroList[
+              Math.floor(
+                Math.random() * heroList.length
+              )
+            ];
+
+          setHero(randomHero);
+
+        }
+
+
+      } catch (error) {
 
         console.error(
-          "Home Error:",
+          "Home page error:",
           error
         );
 
-
-      }
-
-      finally{
-
+      } finally {
 
         setLoading(false);
 
-
       }
-
 
     }
 
 
-
     loadData();
 
-
-
-  },[]);
-
+  }, []);
 
 
 
-
-
-
-  if(loading){
-
+  if (loading) {
 
     return (
 
@@ -206,12 +136,7 @@ export default function Home() {
 
     );
 
-
   }
-
-
-
-
 
 
 
@@ -220,195 +145,307 @@ export default function Home() {
     <Layout>
 
 
-      <Hero movie={hero}/>
+      {/* Hero */}
+
+      <Hero movie={hero} />
 
 
 
+      <div className="mx-auto max-w-7xl px-6 py-12">
 
 
-
-      <main
-        className="
-          mx-auto
-          max-w-7xl
-          px-6
-          py-12
-        "
-      >
-
-
-
-
-
+        {/* Trending */}
 
         <Section title="🔥 Trending Now">
 
-
           <HorizontalScroll>
 
-
-            {trending.map(item=>(
-
+            {trending.map((item) => (
 
               <MovieCard
-
                 key={`${item.media_type}-${item.id}`}
-
                 item={item}
-
               />
-
 
             ))}
 
-
           </HorizontalScroll>
-
 
         </Section>
 
 
 
-
-
-
-
-
+        {/* Popular Movies */}
 
         <Section title="🎬 Popular Movies">
 
-
           <HorizontalScroll>
 
-
-            {movies.map(item=>(
-
+            {movies.map((item) => (
 
               <MovieCard
-
                 key={item.id}
-
                 item={{
                   ...item,
-                  media_type:"movie",
+                  media_type: "movie",
                 }}
-
               />
-
 
             ))}
 
-
           </HorizontalScroll>
-
 
         </Section>
 
 
 
+        {/* TV Shows */}
 
-
-
-
-
-
-        <Section title="📺 Popular TV Shows">
-
+        <Section title="📺 Trending TV Shows">
 
           <HorizontalScroll>
 
-
-            {tvShows.map(item=>(
-
+            {tvShows.map((item) => (
 
               <MovieCard
-
                 key={item.id}
-
                 item={{
                   ...item,
-                  media_type:"tv",
+                  media_type: "tv",
                 }}
-
               />
-
 
             ))}
 
-
           </HorizontalScroll>
-
 
         </Section>
 
 
 
+        {/* Recommended */}
 
-
-
-
-
-
-        <Section title="⭐ Top Picks For You">
-
+        <Section title="⭐ Recommended For You">
 
           <HorizontalScroll>
-
 
             {[
-
-              ...movies,
-
-              ...tvShows,
-
-            ]
-
-            .sort(
-              (a,b)=>
-              b.vote_average -
-              a.vote_average
-            )
-
-            .slice(0,12)
-
-            .map(item=>(
-
+              ...movies.slice(0, 5),
+              ...tvShows.slice(0, 5),
+            ].map((item) => (
 
               <MovieCard
-
-                key={`top-${item.id}`}
-
+                key={`recommended-${item.id}`}
                 item={{
                   ...item,
                   media_type:
                     item.media_type ||
-                    (
-                      item.title
-                      ? "movie"
-                      : "tv"
-                    ),
+                    (item.first_air_date
+                      ? "tv"
+                      : "movie"),
                 }}
-
               />
-
 
             ))}
 
-
-
           </HorizontalScroll>
-
 
         </Section>
 
 
 
+        {/* Latest Blog */}
+
+        {articles.length > 0 && (
+
+          <section className="mt-16">
+
+
+            <div className="
+              mb-7
+              flex
+              items-center
+              justify-between
+            ">
+
+              <div>
+
+                <span className="
+                  text-sm
+                  font-semibold
+                  uppercase
+                  tracking-wider
+                  text-red-500
+                ">
+                  StreamFlix Editorial
+                </span>
+
+                <h2 className="
+                  mt-1
+                  text-2xl
+                  font-bold
+                  md:text-3xl
+                ">
+                  Latest from the Blog
+                </h2>
+
+              </div>
+
+
+              <Link
+                to="/blog"
+                className="
+                  text-sm
+                  font-semibold
+                  text-zinc-400
+                  transition
+                  hover:text-red-500
+                "
+              >
+                View All →
+              </Link>
+
+            </div>
 
 
 
+            <div className="
+              grid
+              gap-6
+              sm:grid-cols-2
+              lg:grid-cols-3
+            ">
 
-      </main>
 
+              {articles
+                .slice(0, 3)
+                .map((article) => (
+
+                  <Link
+                    key={article.id}
+                    to={`/blog/${article.id}`}
+                    className="
+                      group
+                      overflow-hidden
+                      rounded-2xl
+                      border
+                      border-zinc-800
+                      bg-zinc-900
+                      transition
+                      duration-300
+                      hover:-translate-y-1
+                      hover:border-zinc-700
+                    "
+                  >
+
+
+                    <div className="
+                      relative
+                      aspect-video
+                      overflow-hidden
+                    ">
+
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        loading="lazy"
+                        className="
+                          h-full
+                          w-full
+                          object-cover
+                          transition
+                          duration-500
+                          group-hover:scale-105
+                        "
+                      />
+
+                      <div className="
+                        absolute
+                        inset-0
+                        bg-gradient-to-t
+                        from-black/70
+                        via-transparent
+                        to-transparent
+                      " />
+
+
+                      <span className="
+                        absolute
+                        bottom-4
+                        left-4
+                        rounded-full
+                        bg-black/70
+                        px-3
+                        py-1
+                        text-xs
+                        font-semibold
+                        backdrop-blur
+                      ">
+                        {article.category}
+                      </span>
+
+                    </div>
+
+
+
+                    <div className="p-6">
+
+                      <div className="
+                        mb-3
+                        text-xs
+                        text-zinc-500
+                      ">
+                        {article.date}
+                        {" • "}
+                        {article.readTime}
+                      </div>
+
+
+                      <h3 className="
+                        text-xl
+                        font-bold
+                        leading-snug
+                        transition
+                        group-hover:text-red-500
+                      ">
+                        {article.title}
+                      </h3>
+
+
+                      <p className="
+                        mt-3
+                        line-clamp-2
+                        text-sm
+                        leading-6
+                        text-zinc-400
+                      ">
+                        {article.excerpt}
+                      </p>
+
+
+                      <div className="
+                        mt-5
+                        font-semibold
+                        text-zinc-300
+                        transition
+                        group-hover:text-red-500
+                      ">
+                        Read Article →
+                      </div>
+
+                    </div>
+
+                  </Link>
+
+                ))}
+
+            </div>
+
+          </section>
+
+        )}
+
+      </div>
 
     </Layout>
 
